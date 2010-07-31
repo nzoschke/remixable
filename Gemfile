@@ -3,6 +3,6 @@ source :gemcutter
 gem 'sinatra'
 gem 'redis'
 
-group :production do
+group :development do
   gem 'shotgun'
 end
