@@ -32,12 +32,13 @@ module ITunes
   end
 
   class Track
-    attr_accessor :artist, :album, :title
+    attr_accessor :artist, :album, :title, :number
     
     def initialize(plist_data)
       self.artist = plist_data['Artist'] || 'Unknown Artist'
       self.album  = plist_data['Album']  || 'Unknown Album'
       self.title  = plist_data['Name']
+      self.number = plist_data['Track Number']
     end
 
     def _id
@@ -45,7 +46,7 @@ module ITunes
     end
 
     def to_bson
-      { :_id => _id, :artist => artist, :album => album, :title => title }
+      { :_id => _id, :artist => artist, :album => album, :title => title, :number => number }
     end
   end
 end
