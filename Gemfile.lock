@@ -1,8 +1,12 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    bson (1.0.4)
+    bson_ext (1.0.4)
+    mongo (1.0.6)
+      bson (>= 1.0.4)
+    plist (3.1.0)
     rack (1.2.1)
-    redis (2.0.5)
     shotgun (0.8)
       rack (>= 1.0)
     sinatra (1.0)
@@ -12,6 +16,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  redis
+  bson_ext
+  mongo
+  plist
   shotgun
   sinatra
