@@ -1,5 +1,6 @@
 source :gemcutter
 
+gem 'rake'
 gem 'sinatra'
 gem 'mongo'
 gem 'bson_ext'

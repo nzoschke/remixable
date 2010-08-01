@@ -7,6 +7,7 @@ GEM
       bson (>= 1.0.4)
     plist (3.1.0)
     rack (1.2.1)
+    rake (0.8.7)
     shotgun (0.8)
       rack (>= 1.0)
     sinatra (1.0)
@@ -19,5 +20,6 @@ DEPENDENCIES
   bson_ext
   mongo
   plist
+  rake
   shotgun
   sinatra
