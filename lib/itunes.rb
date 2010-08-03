@@ -2,12 +2,17 @@ require 'plist'
 
 module ITunes
   class XMLLibrary
-    attr_accessor :plist
+    attr_accessor :plist, :user_id
 
     def initialize(path, user_id)
       path = File.expand_path path
       raise RuntimeError.new("iTunes Library XML file not found") unless File.exists? path
       self.plist = Plist::parse_xml(path)
+      self.user_id = user_id
+    end
+
+    def songs
+      @songs ||= DB['songs']
     end
 
     def playlists
@@ -25,7 +30,8 @@ module ITunes
     def save
       plist['Tracks'].each { |id,data|
         track = Track.new(data)
-        MONGO['remixable']['songs'].insert(track.to_bson)
+        _id = DB['songs'].insert(track.to_bson)
+        DB['songs'].update( { :_id => _id } , { '$addToSet' => { 'libraries' => user_id } } )
       }
     end
 
@@ -41,12 +47,9 @@ module ITunes
       self.number = plist_data['Track Number']
     end
 
-    def _id
-      "#{artist}:#{album}:#{title}".downcase
-    end
-
     def to_bson
-      { :_id => _id, :artist => artist, :album => album, :title => title, :number => number }
+      { :artist => artist, :album => album, :title => title, :number => number }
     end
   end
+
 end

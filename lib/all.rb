@@ -7,8 +7,12 @@ require 'bson'
 require 'mongo'
 
 require 'lib/itunes'
+require 'lib/user'
 
 MONGO = Mongo::Connection.from_uri(ENV['MONGO_URL'] || 'mongodb://127.0.0.1:27017/')
+DB = MONGO['remixable']
+DB['songs'].create_index([['artist', Mongo::ASCENDING], ['album', Mongo::ASCENDING]]);
+
 
 class Numeric
   def roundup(nearest=10)
