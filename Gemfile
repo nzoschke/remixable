@@ -8,4 +8,5 @@ gem 'plist'
 
 group :development do
   gem 'shotgun'
+  gem 'uki'
 end

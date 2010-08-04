@@ -1,8 +1,19 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    bind (0.2.8)
+      commander (>= 4.0.0)
     bson (1.0.4)
     bson_ext (1.0.4)
+    commander (4.0.3)
+      highline (>= 1.5.0)
+    highline (1.6.1)
+    json_pure (1.4.3)
+    jspec (4.3.3)
+      bind (>= 0.2.8)
+      commander (>= 4.0.1)
+      json_pure
+      sinatra
     mongo (1.0.6)
       bson (>= 1.0.4)
     plist (3.1.0)
@@ -12,6 +23,10 @@ GEM
       rack (>= 1.0)
     sinatra (1.0)
       rack (>= 1.0)
+    uki (1.1.1)
+      commander (>= 4.0.1)
+      jspec (>= 3.3.2)
+      sinatra
 
 PLATFORMS
   ruby
@@ -23,3 +38,4 @@ DEPENDENCIES
   rake
   shotgun
   sinatra
+  uki
