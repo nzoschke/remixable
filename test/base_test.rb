@@ -1,6 +1,7 @@
 require 'lib/all'
 require 'test/unit'
-#require 'contest'
+
+DB = MONGO['remixable_test']
 
 class BaseTest < Test::Unit::TestCase
   def test_default
@@ -38,7 +39,7 @@ class BaseTest < Test::Unit::TestCase
     assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z', 'LCD Soundsystem'], "albums" => nil, "songs" => nil }, noah.selections)
     assert_equal 12, noah.albums.count # tricky; one album overlap!
     assert_equal 138, noah.songs.count
-    
+
     assert_equal 4, DB['logs'].count
   end
 end

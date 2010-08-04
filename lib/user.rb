@@ -17,15 +17,19 @@ class User
     latest_log ? latest_log['selections'] : empty_selections
   end
 
+  def libraries
+    #return DB['songs'].distinct('artist', :query => {:libraries => {"$in" => selections['libraries']}})
+  end
+
   def artists
     return DB['songs'].distinct('artist') if !selections['libraries']
-    return DB['songs'].distinct('artist', :query => { :libraries => {"$in" => selections['libraries']}})
+    return DB['songs'].distinct('artist', :query => {:libraries => {"$in" => selections['libraries']}})
   end
 
   def albums
     return DB['songs'].distinct('album') if !selections['libraries']
-    return DB['songs'].distinct('album', :query => { :libraries => {"$in" => selections['libraries']} }) if !selections['artists']
-    return DB['songs'].distinct('album', :query => { :libraries => {"$in" => selections['libraries']}, :artist => {"$in" => selections['artists']} })
+    return DB['songs'].distinct('album', :query => {:libraries => {"$in" => selections['libraries']}}) if !selections['artists']
+    return DB['songs'].distinct('album', :query => {:libraries => {"$in" => selections['libraries']}, :artist => {"$in" => selections['artists']}})
   end
 
   def songs
