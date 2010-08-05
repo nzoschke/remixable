@@ -35,7 +35,7 @@ uki.theme.airport.imagePath = 'i/';
 // skip interface creation if we're testing
 if (window.TESTING) return;
 
-frontend.layout.main().attachTo(window, '300 62');
+frontend.layout.main().attachTo(window, '960 640');
 
 uki('Button').click(function() {
     alert(this.text());
