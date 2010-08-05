@@ -41,18 +41,27 @@ frontend.layout.main().attachTo(window, '960 640');
 //uki('#artists').attr('initialData', uki('#artists').data());
 //uki('#albums' ).attr('initialData', uki('#artists').data());
 
-uki.getJSON('/state', {}, function(d) {
+function updateState(d) {
+  console.log(d);
   uki('#playlists').data(d.libraries);
   uki('#albums').data(d.albums);
   uki('#artists').data(d.artists);
   uki('#playlist').data(d.songs);
-  //console.log(d);
-});
+};
 
-uki('#artists').bind('click', function(e) {
-  uki('#albums').data(this.selectedRows());
-});
+uki.getJSON('/state', {}, updateState);
 
+function onStateChange(e) {
+  var data = {
+    'libraries': uki('#libraries').selectedRows(),
+    'artists':   uki('#artists').selectedRows(),
+    'albums':    uki('#albums').selectedRows(),
+    '_method':    'put'
+  }
+  uki.post('/state', data, updateState);
+}
+
+uki('#artists').bind('click', onStateChange);
 uki('#albums').bind('click', function(e) {
   uki('#playlist').data(this.selectedRows());
 });
