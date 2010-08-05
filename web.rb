@@ -8,6 +8,11 @@ get '/' do
   erb :index
 end
 
+get '/state' do
+  @user = User.new('noah')
+  @user.data
+end
+
 get %r{\.cjs$} do
   path = request.path.sub(/\.cjs$/, '.js').sub(%r{^/}, './')
   pass unless File.exists? path

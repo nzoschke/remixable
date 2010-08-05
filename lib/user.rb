@@ -5,7 +5,8 @@ class User
     self.user_id = user_id
   end
 
-  def view_json
+  def data(format='json')
+    {:libraries => libraries, :artists => artists, :albums => albums, :songs => songs}.to_json
   end
 
   def select(obj, options={})
@@ -37,10 +38,14 @@ class User
     return DB['songs'].distinct('album', :query => {:libraries => {"$in" => selections['libraries']}, :artist => {"$in" => selections['artists']}})
   end
 
-  def songs
-    return DB['songs'] if !selections['libraries']
+  def songs_cursor
+    return DB['songs'].find() if !selections['libraries']
     return DB['songs'].find(:libraries => {"$in" => selections['libraries']}) if !selections['artists']
     return DB['songs'].find(:libraries => {"$in" => selections['libraries']}, :artist => {"$in" => selections['artists']}) if !selections['albums']
     return DB['songs'].find(:libraries => {"$in" => selections['libraries']}, :artist => {"$in" => selections['artists']}, :album => {"$in" => selections['albums']})
+  end
+
+  def songs
+    songs_cursor.collect { |d| d }
   end
 end
