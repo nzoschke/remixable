@@ -4,6 +4,7 @@ frontend = {};
 
 // all core modules
 include('frameworks/uki/uki-core.js');
+include('frameworks/uki/uki-data/ajax.js');
 
 // used views, comment out unused ones
 include('frameworks/uki/uki-view/view/box.js');
@@ -37,8 +38,20 @@ if (window.TESTING) return;
 
 frontend.layout.main().attachTo(window, '960 640');
 
-uki('Button').click(function() {
-    alert(this.text());
+//uki('#artists').attr('initialData', uki('#artists').data());
+//uki('#albums' ).attr('initialData', uki('#artists').data());
+
+uki.getJSON('/state', {}, function(d) {
+  console.log(d);
 });
+
+uki('#artists').bind('click', function(e) {
+  uki('#albums').data(this.selectedRows());
+});
+
+uki('#albums').bind('click', function(e) {
+  uki('#playlist').data(this.selectedRows());
+});
+
 
 })();
