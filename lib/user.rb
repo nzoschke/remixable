@@ -5,6 +5,9 @@ class User
     self.user_id = user_id
   end
 
+  def view_json
+  end
+
   def select(obj, options={})
     new_selections = selections
     new_selections = new_selections.update(obj) if obj
@@ -12,13 +15,15 @@ class User
   end
 
   def selections
-    empty_selections = { :libraries => nil, :playlists => nil, :artists => nil, :albums => nil, :songs => nil }
+    empty_selections = { 'libraries' => nil, 'playlists' => nil, 'artists' => nil, 'albums' => nil, 'songs' => nil }
     latest_log = DB['logs'].find( :user_id => user_id ).sort([:_id, Mongo::DESCENDING]).limit(1).first
     latest_log ? latest_log['selections'] : empty_selections
   end
 
   def libraries
-    #return DB['songs'].distinct('artist', :query => {:libraries => {"$in" => selections['libraries']}})
+    all_libraries = DB['songs'].distinct('libraries').flatten.uniq # inefficient
+    return all_libraries if !selections['libraries']
+    return all_libraries & selections['libraries']
   end
 
   def artists

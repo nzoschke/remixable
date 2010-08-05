@@ -21,14 +21,21 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 10,  DB['songs'].distinct('album', :query => { :artist => 'Jay-Z' }).count
     assert_equal 13,  DB['songs'].find(:artist => 'Jay-Z', :album => 'The Blueprint').count
 
+    # add one song to two libraries
+    song = DB['songs'].find().sort([:_id, Mongo::DESCENDING]).limit(1).first
+    DB['songs'].update( { :_id => song['_id'] } , { '$addToSet' => { 'libraries' => 'jason' } } )
+    assert_equal 2, DB['songs'].find_one(:_id => song['_id'])['libraries'].count
+
     DB['logs'].remove
     noah = User.new('noah')
     noah.select(nil)
     assert_equal 1, DB['logs'].find(:user_id => 'noah').count
     assert_equal({ "libraries" => nil, "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.selections)
+    assert_equal 2,  noah.libraries.count
     
     noah.select("libraries" => ['noah'])
     assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.selections)
+    assert_equal 1,  noah.libraries.count
 
     noah.select(:artists => [noah.artists[132]]) # click Jay-Z
     assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z'], "albums" => nil, "songs" => nil }, noah.selections)
