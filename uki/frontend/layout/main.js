@@ -1,5 +1,12 @@
 include('../layout.js');
 
+var SongRender = uki.extend({}, uki.view.list.Render, {
+  render: function(data, rect, i) {
+    return '<div style="line-height: ' + rect.height + 'px; font-size: 12px; padding: 0 4px;">' + data.artist + ' - ' + data.title + '</div>';
+  }
+});
+
+
 frontend.layout.main = function() {
   var data = ['this is', '300 long', 'list'];
   for (var i=3; i < 300; i++) {
@@ -36,7 +43,7 @@ frontend.layout.main = function() {
       rect: '520 0 440 640', anchors: 'left top bottom',
       rowHeight: 30,
       throttle: 0, multiselect: true, textSelectable: false,
-      data: data
+      data: data, render: SongRender
     }]
   });
 }

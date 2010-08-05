@@ -42,7 +42,11 @@ frontend.layout.main().attachTo(window, '960 640');
 //uki('#albums' ).attr('initialData', uki('#artists').data());
 
 uki.getJSON('/state', {}, function(d) {
-  console.log(d);
+  uki('#playlists').data(d.libraries);
+  uki('#albums').data(d.albums);
+  uki('#artists').data(d.artists);
+  uki('#playlist').data(d.songs);
+  //console.log(d);
 });
 
 uki('#artists').bind('click', function(e) {
