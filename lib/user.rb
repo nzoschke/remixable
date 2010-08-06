@@ -39,28 +39,29 @@ class Filterer
     latest_log ? latest_log['filters'] : EMPTY_FILTERS
   end
 
+  def query(filter_fields)
+    query = {}
+    filter_fields.each { |field|
+      db_field = field == 'libraries' ? field : field[0..-2] # GROSS
+      query[db_field.to_sym] = {"$in" => filters[field]} if filters[field]
+    }
+    query
+  end
+
   def libraries
-    DB['songs'].distinct('libraries').flatten.uniq # inefficient
-    #return all_libraries if !filters['libraries']
-    #return all_libraries & filters['libraries']
+    DB['songs'].distinct('libraries').flatten.uniq # TODO: inefficient?
   end
 
   def artists
-    return DB['songs'].distinct('artist') if !filters['libraries']
-    return DB['songs'].distinct('artist', :query => {:libraries => {"$in" => filters['libraries']}})
+    DB['songs'].distinct('artist', :query => query(['libraries']))
   end
 
   def albums
-    return DB['songs'].distinct('album') if !filters['libraries']
-    return DB['songs'].distinct('album', :query => {:libraries => {"$in" => filters['libraries']}}) if !filters['artists']
-    return DB['songs'].distinct('album', :query => {:libraries => {"$in" => filters['libraries']}, :artist => {"$in" => filters['artists']}})
+    DB['songs'].distinct('album', :query => query(['libraries', 'artists']))
   end
 
   def songs_cursor
-    return DB['songs'].find() if !filters['libraries']
-    return DB['songs'].find(:libraries => {"$in" => filters['libraries']}) if !filters['artists']
-    return DB['songs'].find(:libraries => {"$in" => filters['libraries']}, :artist => {"$in" => filters['artists']}) if !filters['albums']
-    return DB['songs'].find(:libraries => {"$in" => filters['libraries']}, :artist => {"$in" => filters['artists']}, :album => {"$in" => filters['albums']})
+    DB['songs'].find(query(['libraries', 'artists', 'albums']))
   end
 
   def songs
