@@ -17,21 +17,25 @@ end
 
 class Filterer
   attr_accessor :user_id
+  EMPTY_FILTERS = { 'libraries' => nil, 'playlists' => nil, 'artists' => nil, 'albums' => nil, 'songs' => nil }
 
   def initialize(user_id)
     self.user_id = user_id
   end
 
-  def update(obj, options={})
+  def update(obj, context=nil)
     new_filters = filters
     new_filters = new_filters.update(obj) if obj
-    DB['logs'].insert({ :user_id => user_id, :filters => new_filters })    
+    DB['logs'].insert({ :user_id => user_id, :filters => new_filters, :context => context })
+  end
+
+  def clear(context=nil)
+    DB['logs'].insert({ :user_id => user_id, :filters => EMPTY_FILTERS, :context => context })
   end
 
   def filters
-    empty_filters = { 'libraries' => nil, 'playlists' => nil, 'artists' => nil, 'albums' => nil, 'songs' => nil }
     latest_log = DB['logs'].find( :user_id => user_id ).sort([:_id, Mongo::DESCENDING]).limit(1).first
-    latest_log ? latest_log['filters'] : empty_filters
+    latest_log ? latest_log['filters'] : EMPTY_FILTERS
   end
 
   def libraries
