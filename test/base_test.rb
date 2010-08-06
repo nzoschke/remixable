@@ -37,7 +37,7 @@ class BaseTest < Test::Unit::TestCase
 
     noah.filtered.update("libraries" => ['noah'])
     assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.filtered.filters)
-    assert_equal 1,  noah.filtered.libraries.count
+    assert_equal 2,  noah.filtered.libraries.count
     assert_equal 800, noah.filtered.songs.count
     assert noah.data
 
