@@ -6,7 +6,7 @@ class User
     self.filtered = Filterer.new(user_id)
   end
 
-  def [](user_id)
+  def self.[](user_id)
     User.new(user_id)
   end
 

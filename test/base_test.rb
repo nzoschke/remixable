@@ -27,7 +27,7 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 2, DB['songs'].find_one(:_id => song['_id'])['libraries'].count
 
     DB['logs'].remove
-    noah = User.new('noah')
+    noah = User['noah']
     noah.filtered.update(nil)
     assert_equal 1, DB['logs'].find(:user_id => 'noah').count
 
