@@ -56,6 +56,10 @@ class BaseTest < Test::Unit::TestCase
     noah.filtered.clear({:user_id => 'tester', :from => 'test'})
     assert_equal 800, noah.filtered.songs.count
 
-    assert_equal 5, DB['logs'].count
+    # log can carry other context
+    noah.filtered.update("libraries" => ['noah'], "_method" => 'put')
+    assert_equal 'put', noah.filtered.filters['_method']
+
+    assert_equal 6, DB['logs'].count
   end
 end
