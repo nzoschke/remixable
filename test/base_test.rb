@@ -28,24 +28,24 @@ class BaseTest < Test::Unit::TestCase
 
     DB['logs'].remove
     noah = User.new('noah')
-    noah.filter(nil)
+    noah.filtered.update(nil)
     assert_equal 1, DB['logs'].find(:user_id => 'noah').count
-    assert_equal({ "libraries" => nil, "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.filters)
-    assert_equal 2,  noah.libraries.count
+    assert_equal({ "libraries" => nil, "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.filtered.filters)
+    assert_equal 2,  noah.filtered.libraries.count
     
-    noah.filter("libraries" => ['noah'])
-    assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.filters)
-    assert_equal 1,  noah.libraries.count
+    noah.filtered.update("libraries" => ['noah'])
+    assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.filtered.filters)
+    assert_equal 1,  noah.filtered.libraries.count
 
-    noah.filter(:artists => [noah.artists[132]]) # click Jay-Z
-    assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z'], "albums" => nil, "songs" => nil }, noah.filters)
-    assert_equal 10,  noah.albums.count
-    assert_equal 125, noah.songs.count
+    noah.filtered.update(:artists => [noah.filtered.artists[132]]) # click Jay-Z
+    assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z'], "albums" => nil, "songs" => nil }, noah.filtered.filters)
+    assert_equal 10,  noah.filtered.albums.count
+    assert_equal 125, noah.filtered.songs.count
 
-    noah.filter(:artists => [noah.artists[132], noah.artists[164]]) # shift-click LCD Soundsystem
-    assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z', 'LCD Soundsystem'], "albums" => nil, "songs" => nil }, noah.filters)
-    assert_equal 12, noah.albums.count # tricky; one album overlap!
-    assert_equal 138, noah.songs.count
+    noah.filtered.update(:artists => [noah.filtered.artists[132], noah.filtered.artists[164]]) # shift-click LCD Soundsystem
+    assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z', 'LCD Soundsystem'], "albums" => nil, "songs" => nil }, noah.filtered.filters)
+    assert_equal 12, noah.filtered.albums.count # tricky; one album overlap!
+    assert_equal 138, noah.filtered.songs.count
 
     assert_equal 4, DB['logs'].count
   end

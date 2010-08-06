@@ -1,15 +1,28 @@
 class User
+  attr_accessor :user_id, :filtered
+
+  def initialize(user_id)
+    self.user_id = user_id
+    self.filtered = Filterer.new(user_id)
+  end
+
+  def [](user_id)
+    User.new(user_id)
+  end
+
+  def data(format='json')
+    {:libraries => libraries, :artists => artists, :albums => albums, :songs => songs}.to_json
+  end
+end
+
+class Filterer
   attr_accessor :user_id
 
   def initialize(user_id)
     self.user_id = user_id
   end
 
-  def data(format='json')
-    {:libraries => libraries, :artists => artists, :albums => albums, :songs => songs}.to_json
-  end
-
-  def filter(obj, options={})
+  def update(obj, options={})
     new_filters = filters
     new_filters = new_filters.update(obj) if obj
     DB['logs'].insert({ :user_id => user_id, :filters => new_filters })    
