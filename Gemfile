@@ -4,7 +4,7 @@ gem 'rake'
 gem 'sinatra'
 gem 'mongo'
 gem 'bson_ext'
-gem 'json'
+gem 'json_pure'
 gem 'plist'
 
 group :development do
