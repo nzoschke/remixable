@@ -3,8 +3,7 @@ require 'sinatra'
 
 get '/' do
   @user = User.new('noah')
-  @user.select(nil)
-  puts @user.artists.count
+  @user.filtered.clear({:user_id => 'noah', :from => 'web'})
   erb :index
 end
 

@@ -11,7 +11,7 @@ class User
   end
 
   def data(opts={})
-    {:libraries => filtered.libraries, :artists => filtered.artists, :albums => filtered.albums, :songs => filtered.songs}.to_json
+    {:filters => filtered.filters, :libraries => filtered.libraries, :artists => filtered.artists, :albums => filtered.albums, :songs => filtered.songs}.to_json
   end
 end
 
@@ -24,8 +24,9 @@ class Filterer
   end
 
   def update(obj, context=nil)
+    return clear(context) if not obj
     new_filters = filters
-    new_filters = new_filters.update(obj) if obj
+    new_filters = new_filters.update(obj)
     DB['logs'].insert({ :user_id => user_id, :filters => new_filters, :context => context })
   end
 
