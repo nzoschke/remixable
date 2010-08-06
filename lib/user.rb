@@ -10,8 +10,8 @@ class User
     User.new(user_id)
   end
 
-  def data(format='json')
-    {:libraries => libraries, :artists => artists, :albums => albums, :songs => songs}.to_json
+  def data(opts={})
+    {:libraries => filtered.libraries, :artists => filtered.artists, :albums => filtered.albums, :songs => filtered.songs}.to_json
   end
 end
 
