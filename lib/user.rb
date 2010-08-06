@@ -40,9 +40,9 @@ class Filterer
   end
 
   def libraries
-    all_libraries = DB['songs'].distinct('libraries').flatten.uniq # inefficient
-    return all_libraries if !filters['libraries']
-    return all_libraries & filters['libraries']
+    DB['songs'].distinct('libraries').flatten.uniq # inefficient
+    #return all_libraries if !filters['libraries']
+    #return all_libraries & filters['libraries']
   end
 
   def artists
