@@ -13,6 +13,12 @@ get '/state' do
   @user.data
 end
 
+put '/state' do
+  @user = User.new('noah')
+	puts params.inspect
+  @user.data
+end
+
 get %r{\.cjs$} do
   path = request.path.sub(/\.cjs$/, '.js').sub(%r{^/}, './')
   pass unless File.exists? path

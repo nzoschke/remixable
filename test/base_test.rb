@@ -32,10 +32,13 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 1, DB['logs'].find(:user_id => 'noah').count
     assert_equal({ "libraries" => nil, "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.selections)
     assert_equal 2,  noah.libraries.count
+		assert noah.data
     
     noah.select("libraries" => ['noah'])
     assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => nil, "albums" => nil, "songs" => nil }, noah.selections)
     assert_equal 1,  noah.libraries.count
+    assert_equal 800, noah.songs.count
+		assert noah.data
 
     noah.select(:artists => [noah.artists[132]]) # click Jay-Z
     assert_equal({ "libraries" => ['noah'], "playlists" => nil, "artists" => ['Jay-Z'], "albums" => nil, "songs" => nil }, noah.selections)
