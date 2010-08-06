@@ -30,7 +30,6 @@ include('frameworks/uki/uki-theme/airport.js');
 include('frameworks/uki/uki-data/model.js');
 include('frontend/layout/main.js');
 
-
 uki.theme.airport.imagePath = 'i/';
 
 // skip interface creation if we're testing
@@ -38,33 +37,56 @@ if (window.TESTING) return;
 
 frontend.layout.main().attachTo(window, '960 640');
 
-//uki('#artists').attr('initialData', uki('#artists').data());
-//uki('#albums' ).attr('initialData', uki('#artists').data());
-
 function updateState(d) {
-  console.log(d);
-  uki('#playlists').data(d.libraries);
-  uki('#albums').data(d.albums);
+  console.log(d.filters, d);
+  uki('#libraries').data(d.libraries);
   uki('#artists').data(d.artists);
+  uki('#albums').data(d.albums);
   uki('#playlist').data(d.songs);
+
+  for (var filter in d.filters) {
+    var selectedRows = d.filters[filter];
+    var list = uki("#" + filter);
+
+    if (!selectedRows) {
+      list.selectedIndexes([]);
+      continue;
+    }
+
+    var rows = list.data();
+    var selectedIndexes = []
+    for (var i = 0; i < selectedRows.length; i++)
+      selectedIndexes.push(rows.indexOf(selectedRows[i]));
+    list.selectedIndexes(selectedIndexes);
+  }
 };
 
 uki.getJSON('/state', {}, updateState);
 
-function onStateChange(e) {
-  var data = {
-    'libraries': uki('#libraries').selectedRows(),
-    'artists':   uki('#artists').selectedRows(),
-    'albums':    uki('#albums').selectedRows(),
-    '_method':    'put'
-  }
-  uki.post('/state', data, updateState);
+function onLibraryChange(e) {
+  uki('#artists').selectedIndexes([]);
+  uki('#albums').selectedIndexes([]);
+  return onStateChange(e);
 }
 
-uki('#artists').bind('click', onStateChange);
-uki('#albums').bind('click', function(e) {
-  uki('#playlist').data(this.selectedRows());
-});
+function onArtistChange(e) {
+  uki('#albums').selectedIndexes([]);
+  return onStateChange(e);
+}
 
+function onStateChange(e) {
+  var data = {
+    'libraries': uki('#libraries').selectedRows().length > 0 ? uki('#libraries').selectedRows() : 'nil', // uki.post isn't sending empty arrays
+    'artists':   uki('#artists').selectedRows().length > 0 ? uki('#artists').selectedRows() : 'nil',
+    'albums':    uki('#albums').selectedRows().length > 0 ? uki('#albums').selectedRows() : 'nil',
+    '_method':   'put'
+  }
+  console.log(data);
+  uki.post('/state', data, updateState, 'json');
+}
+
+uki('#libraries').bind('click', onLibraryChange);
+uki('#artists').bind('click', onArtistChange);
+uki('#albums').bind('click', onStateChange);
 
 })();

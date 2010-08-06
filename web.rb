@@ -4,6 +4,7 @@ require 'sinatra'
 get '/' do
   @user = User.new('noah')
   @user.filtered.clear({:user_id => 'noah', :from => 'web'})
+  #@user.filtered.update("libraries" => ['noah'])
   erb :index
 end
 
@@ -13,8 +14,11 @@ get '/state' do
 end
 
 put '/state' do
+  # HACK; uki.post is not sending empty arrays, client modified to send magic string instead
+  params.each {|k,v| params[k] = nil if v === "nil"}
+  puts params.inspect
   @user = User.new('noah')
-	puts params.inspect
+  @user.filtered.update(params)
   @user.data
 end
 

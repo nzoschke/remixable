@@ -18,7 +18,7 @@ frontend.layout.main = function() {
     rect: '960 640', anchors: 'left top',
     background: '#EEE',
     childViews: [{
-      view: 'ScrollableList', id: 'playlists',
+      view: 'ScrollableList', id: 'libraries',
       rect: '200 640', anchors: 'left top bottom',
       rowHeight: 30,
       throttle: 0, multiselect: true, textSelectable: false,
