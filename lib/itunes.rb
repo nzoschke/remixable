@@ -2,17 +2,14 @@ require 'plist'
 
 module ITunes
   class XMLLibrary
-    attr_accessor :plist, :user_id
+    attr_reader :plist, :root, :user_id
 
     def initialize(path, user_id)
       path = File.expand_path path
       raise RuntimeError.new("iTunes Library XML file not found") unless File.exists? path
-      self.plist = Plist::parse_xml(path)
-      self.user_id = user_id
-    end
-
-    def songs
-      @songs ||= DB['songs']
+      @plist = Plist::parse_xml(path)
+      @root = self.plist['Music Folder']
+      @user_id = user_id
     end
 
     def playlists
@@ -29,26 +26,33 @@ module ITunes
 
     def save
       plist['Tracks'].each { |id,data|
-        track = Track.new(data)
-        _id = DB['songs'].insert(track.to_bson)
-        DB['songs'].update( { :_id => _id } , { '$addToSet' => { 'libraries' => user_id } } )
+        track = Track.new(data, self)
+        if !track.path
+          puts "Skipping #{track.location}"
+          next
+        end
+
+        DB['songs'].save(track.to_bson)
       }
     end
-
   end
 
   class Track
-    attr_accessor :artist, :album, :title, :number
+    attr_accessor :_id, :artist, :album, :title, :number, :location, :path
     
-    def initialize(plist_data)
-      self.artist = plist_data['Artist'] || 'Unknown Artist'
-      self.album  = plist_data['Album']  || 'Unknown Album'
-      self.title  = plist_data['Name']
-      self.number = plist_data['Track Number']
+    def initialize(data, library)
+      @_id      = data['Persistent ID']
+      @artist   = data['Artist'] || 'Unknown Artist'
+      @album    = data['Album']  || 'Unknown Album'
+      @title    = data['Name']
+      @number   = data['Track Number']
+      @location = data['Location']
+      @path     = @location.gsub(/^#{library.root}/, '')
+      @path     = nil if @path == @location
     end
 
     def to_bson
-      { :artist => artist, :album => album, :title => title, :number => number }
+      { :_id => _id, :artist => artist, :album => album, :title => title, :number => number, :path => path }
     end
   end
 
