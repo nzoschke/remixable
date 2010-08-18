@@ -1,0 +1,5 @@
+html, body { margin: 0; padding: 0; }
+ol, ul { border: 1px solid red; float: left; width: 160px; height: 100%; margin: 0; margin-right: 10px; overflow: scroll; padding: 0; }
+ol li, ul li { margin: 0; padding: 0; list-style-type: none; }
+
+ol#playlist { width: 300px; }
