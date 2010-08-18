@@ -18,6 +18,7 @@ get '/folder' do
 
     if @artist["path"] != artist_path
       @artist = {"path" => artist_path, "children" => []}
+      @album = {}
       @root["children"] << @artist
     end
     

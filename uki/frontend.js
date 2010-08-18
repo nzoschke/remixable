@@ -59,8 +59,9 @@ uki('#folders').bind('selection', onFoldersSelection);
 
 
 function onGetFolders(e) {
-  console.log(e)
   uki('#folders').data(e);
+  uki('#folders').selectedIndexes([0]);
+  uki('#folders').focus();
 }
 uki.getJSON('/folder', {}, onGetFolders);
 
