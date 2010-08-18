@@ -8,6 +8,30 @@ get '/' do
   erb :index
 end
 
+get '/folder' do
+  songs = DB['songs'].find({:path => /^Music\//}).sort([:path, 'ascending'])
+
+  @root = {"path" => "Music", "children" => []}
+  @artist = @album = {}
+  songs.each do |song|
+    root_path, artist_path, album_path, file_path = song["path"].split('/')
+
+    if @artist["path"] != artist_path
+      @artist = {"path" => artist_path, "children" => []}
+      @root["children"] << @artist
+    end
+    
+    if @album["path"] != album_path
+      @album = {"path" => album_path, "songs" => []}
+      @artist["children"] << @album
+    end
+
+    @album["songs"] << song
+  end
+
+  [@root].to_json
+end
+
 get '/state' do
   @user = User.new('noah')
   @user.data
