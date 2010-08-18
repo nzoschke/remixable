@@ -30,18 +30,18 @@ uki.more.view.treeList.Render = uki.newClass(uki.view.list.Render, new function(
 
     this.render = function(row, rect, i) {
         this.classPrefix || this.initStyles();
-        var text = row.data,
+        var text = row.data || row['path'] || row['_id'],
             children = uki.attr(row, 'children');
         if (children && children.length) {
             return this._parentTemplate.render({ 
-                text: text, 
+                text: decodeURIComponent(text),
                 indent: row.__indent*18 + 22,
                 classPrefix: this.classPrefix,
                 opened: row.__opened ? 'opened' : ''
             });
         } else {
             return this._leafTemplate.render({ 
-                text: text, 
+                text: decodeURIComponent(text), 
                 indent: row.__indent*18 + 22,
                 classPrefix: this.classPrefix
             });

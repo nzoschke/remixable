@@ -6,6 +6,8 @@ frontend = {};
 include('frameworks/uki/uki-core.js');
 include('frameworks/uki/uki-data/ajax.js');
 
+//include('frameworks/uki/uki-more/more/view/treeList.js');
+
 // used views, comment out unused ones
 include('frameworks/uki/uki-view/view/box.js');
 include('frameworks/uki/uki-view/view/image.js');
@@ -28,6 +30,8 @@ include('frameworks/uki/uki-theme/airport.js');
 
 // data
 include('frameworks/uki/uki-data/model.js');
+
+include('frameworks/uki/uki-more.js');
 include('frontend/layout/main.js');
 
 uki.theme.airport.imagePath = 'i/';
@@ -36,6 +40,35 @@ uki.theme.airport.imagePath = 'i/';
 if (window.TESTING) return;
 
 frontend.layout.main().attachTo(window, '960 640');
+
+function childSongs(folder) {
+  var songs = [];
+  if (folder['songs']) songs = songs.concat(folder['songs']);
+  if (folder.children) { // albums
+    for (var i = 0; i < folder.children.length; i++)
+      songs = songs.concat(childSongs(folder.children[i]))
+  }
+  return songs;
+}
+
+function onFoldersSelection(e) {
+  if (!this.selectedRow()) return;
+  uki('#songs').data(childSongs(this.selectedRow()));
+}
+uki('#folders').bind('selection', onFoldersSelection);
+
+
+function onGetFolders(e) {
+  console.log(e)
+  uki('#folders').data(e);
+}
+uki.getJSON('/folder', {}, onGetFolders);
+
+//uki('#folders').bind('click', onFoldersClick);
+// uki('#folders').bind('open', onFoldersClick);
+// uki('#folders').bind('close', onFoldersClick);
+
+
 
 function updateState(d) {
   console.log(d.filters, d);

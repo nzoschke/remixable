@@ -2,48 +2,45 @@ include('../layout.js');
 
 var SongRender = uki.extend({}, uki.view.list.Render, {
   render: function(data, rect, i) {
-    return '<div style="line-height: ' + rect.height + 'px; font-size: 12px; padding: 0 4px;">' + data.artist + ' - ' + data.title + '</div>';
+    return '<div style="line-height: ' + rect.height + 'px; font-size: 12px; padding: 0 4px;">' + decodeURIComponent(data['path']) + '</div>';
   }
 });
 
-
 frontend.layout.main = function() {
-  var data = ['this is', '300 long', 'list'];
-  for (var i=3; i < 300; i++) {
-    data[i] = 'item #' + (i+1);
-  };
-  
+  sampleData = [{data: 'Loading...'}]
+
   return uki({
-    view: 'Box',
+    view: 'HSplitPane',
     rect: '960 640', anchors: 'left top',
+    handlePosition: 192 * 2, leftMin: 192, rightMin: 192 * 2, handleWidth: 5,
     background: '#EEE',
-    childViews: [{
-      view: 'ScrollableList', id: 'libraries',
-      rect: '200 640', anchors: 'left top bottom',
-      rowHeight: 30,
-      throttle: 0, multiselect: true, textSelectable: false,
-      data: data
-    },
-    {
-      view: 'ScrollableList', id: 'artists',
-      rect: '200 0 160 640', anchors: 'left top bottom',
-      rowHeight: 30,
-      throttle: 0, multiselect: true, textSelectable: false,
-      data: data
-    },
-    {
-      view: 'ScrollableList', id: 'albums',
-      rect: '360 0 160 640', anchors: 'left top bottom',
-      rowHeight: 30,
-      throttle: 0, multiselect: true, textSelectable: false,
-      data: data
-    },
-    {
-      view: 'ScrollableList', id: 'playlist',
-      rect: '520 0 440 640', anchors: 'left top bottom',
-      rowHeight: 30,
-      throttle: 0, multiselect: true, textSelectable: false,
-      data: data, render: SongRender
+    leftChildViews: [{
+      view: 'VSplitPane',
+      rect: '960 640', anchors: 'left top right bottom',
+      handlePosition: 320, leftMin: 160, rightMin: 160, handleWidth: 5,
+      topChildViews: [{
+        view: 'ScrollPane',
+        rect: '384 320', anchors: 'left top right bottom',
+        childViews: [{
+          view: 'uki.more.view.TreeList', id: 'folders', 
+          rect: '384 320', anchors: 'left top right bottom',
+          rowHeight: 22,
+          style: {fontSize: '12px'},
+          multiselect: true,
+          data: sampleData
+        }]
+      }]
+    }],
+    rightChildViews: [{
+      view: 'ScrollPane',
+      rect: '576 640', anchors: 'left top right bottom',
+      childViews: [{
+        view: 'List', id: 'songs',
+        rect: '576 640', anchors: 'left top right bottom',
+        rowHeight: 22,
+        style: {fontSize: '12px'},
+        render: SongRender
+      }]
     }]
   });
 }
